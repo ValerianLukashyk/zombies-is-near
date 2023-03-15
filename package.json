@@ -1,0 +1,38 @@
+{
+  "name": "drone-wars",
+  "version": "0.0.1",
+  "source": "index.html",
+  "private": true,
+  "description": "web3 game where you will be fighting on drone with enemies",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel serve",
+    "build": "parcel build"
+  },
+  "staticFiles": {
+    "staticOutPath": "./assets",
+    "staticPath": "./models"
+  },
+  "keywords": [
+    "game",
+    "web3",
+    "drone",
+    "wars"
+  ],
+  "author": "ValerianLukashyk",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/dat.gui": "^0.7.7",
+    "dat.gui": "^0.7.9",
+    "parcel": "^2.8.3",
+    "parcel-plugin-static-files-copy": "^2.6.0"
+  },
+  "dependencies": {
+    "@parcel/transformer-glsl": "^2.8.3",
+    "cannon": "^0.6.2",
+    "cannon-es": "^0.20.0",
+    "cannon-es-debugger": "^1.0.0",
+    "simplex-noise": "^4.0.1",
+    "three": "^0.150.1"
+  }
+}
