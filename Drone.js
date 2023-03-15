@@ -76,7 +76,7 @@ class Drone {
             this.object.children[4].children.forEach((part) => (part.material = material))
             this.object.scale.set(this.scale, this.scale, this.scale)
             this.object.position.set(0, 100, 0)
-            this.object.rotation.set(0, Math.PI / 2, 0)
+            // this.object.rotation.set(0, Math.PI / 2, 0)
             this.object.add(this.crosshair)
             this.object.add(this.targetCircle)
             callback(this.object)

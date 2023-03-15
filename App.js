@@ -34,17 +34,17 @@ class Game {
         this.gameOver = false
         this.keyState = {}
         this.camera = null
-        this.cameraAngle = Math.PI / 4 // 45 градусів
-
+        this.cameraAngle = Math.PI / 4
+        this.speed = 0.2
         this.initCamera('perspect')
 
         this.scene = new THREE.Scene()
-        this.scene.background = new THREE.Color(0xf0d1b5)
-        // this.scene.fog = new THREE.FogExp2(0x000000, 0.0015)
+        this.scene.background = new THREE.Color(0x4b4b74)
+        this.scene.fog = new THREE.FogExp2(0xff006e, 0.005)
 
-        this.renderer = new THREE.WebGLRenderer({ canvas: this.container, antialias: true })
+        this.renderer = new THREE.WebGLRenderer({ canvas: this.container, antialias: true, precision: 'highp' })
         this.renderer.outputEncoding = THREE.sRGBEncoding
-        this.renderer.setPixelRatio(1.5)
+        this.renderer.setPixelRatio(2)
         this.renderer.shadowMap.enabled = true
 
         this.helpers = new Helpers(this.scene)
@@ -173,6 +173,7 @@ class Game {
             this.postProcess.update(delta)
             // this.renderer.render(this.scene, this.camera)
             this.drone.object && this.updateCamera()
+            if(this.nitro) this.speed
         }
     }
 
@@ -213,108 +214,35 @@ class Game {
         })
     }
 
-    addTiles() {
-        this.scene.add(new THREE.AxesHelper(100))
-
-        var TILE_W = 2,
-            TILE_W_HALF = TILE_W / 2
-
-        for (var z = 0; z < this.worldData.numRows; z++) {
-            var offsetX = 0
-
-            for (var x = 0; x < this.worldData.numCols; x++) {
-                var rand = Math.floor(Math.random() * 5),
-                    randColor = null
-
-                switch (rand) {
-                    case 0:
-                        randColor = 0xff0000
-                        break
-                    case 1:
-                        randColor = 0x00ff00
-                        break
-                    case 2:
-                        randColor = 0x0000ff
-                        break
-                    case 3:
-                        randColor = 0xffff00
-                        break
-                    case 4:
-                        randColor = 0x00ffff
-                        break
-                }
-
-                const geometry = new THREE.BufferGeometry()
-
-                const vertexPositions = [
-                    [-TILE_W / 2, -TILE_W / 2, TILE_W / 2],
-                    [TILE_W / 2, -TILE_W / 2, TILE_W / 2],
-                    [TILE_W / 2, TILE_W / 2, TILE_W / 2],
-
-                    [TILE_W / 2, TILE_W / 2, TILE_W / 2],
-                    [-TILE_W / 2, TILE_W / 2, TILE_W / 2],
-                    [-TILE_W / 2, -TILE_W / 2, TILE_W / 2],
-                ]
-                const vertices = new Float32Array(vertexPositions.length * 3)
-
-                for (let i = 0; i < vertexPositions.length; i++) {
-                    vertices[i * 3 + 0] = vertexPositions[i][0]
-                    vertices[i * 3 + 1] = vertexPositions[i][1]
-                    vertices[i * 3 + 2] = vertexPositions[i][2]
-                }
-
-                geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
-                const tileXPos = x * TILE_W + offsetX + TILE_W * 0.4 * x
-                const tileZPos = z * TILE_W - TILE_W_HALF * 0.4 * z
-
-                const material = new THREE.MeshLambertMaterial({
-                    color: randColor,
-                    side: THREE.FrontSide,
-                })
-                material.shading = THREE.SmoothShading
-                geometry.rotateX(-Math.PI / 2)
-                geometry.computeVertexNormals()
-                const tilePlane = new THREE.Mesh(geometry, material)
-
-                tilePlane.position.set(tileXPos, 0, tileZPos)
-                tilePlane.rotation.y = (45 * Math.PI) / 180
-
-                this.scene.add(tilePlane)
-            }
-        }
-    }
-
     moveDrone() {
-        const speed = 0.1
+        
         const rotateAngle = Math.PI / 4 // 45 градусів
 
         if (this.keyState['KeyW']) {
-            const direction = new THREE.Vector3(0, 0, -1)
-            this.drone.object.translateOnAxis(direction, speed)
-        }
-        if (this.keyState['KeyS']) {
-            const direction = new THREE.Vector3(0, 0, -1)
-            this.drone.object.translateOnAxis(direction, speed)
-        }
-        if (this.keyState['KeyA']) {
-            const direction = new THREE.Vector3(0, 0, -1)
-            this.drone.object.translateOnAxis(direction, speed)
-        }
-        if (this.keyState['KeyD']) {
-            const direction = new THREE.Vector3(0, 0, -1)
-            this.drone.object.translateOnAxis(direction, speed)
-        }
-
-        if (this.keyState['KeyW']) {
             this.drone.object.rotation.y = 0
-        } else if (this.keyState['KeyS']) {
+            const direction = new THREE.Vector3(0, 0, -1)
+            this.drone.object.translateOnAxis(direction, this.speed)
+        }
+        else if (this.keyState['KeyS']) {
             this.drone.object.rotation.y = Math.PI
-        } else if (this.keyState['KeyA']) {
+            const direction = new THREE.Vector3(0, 0, -1)
+            this.drone.object.translateOnAxis(direction, this.speed)
+        }
+        else if (this.keyState['KeyA']) {
             this.drone.object.rotation.y = 2 * rotateAngle
-        } else if (this.keyState['KeyD']) {
+            const direction = new THREE.Vector3(0, 0, -1)
+            this.drone.object.translateOnAxis(direction, this.speed)
+        }
+        else if (this.keyState['KeyD']) {
             this.drone.object.rotation.y = -2 * rotateAngle
+            const direction = new THREE.Vector3(0, 0, -1)
+            this.drone.object.translateOnAxis(direction, this.speed)
         }
 
+        if(this.keyState['Shift']) {
+            this.nitro = true
+            // speed = 0.4
+        }
         if (this.keyState['Space']) {
             this.dropBomb()
         }
