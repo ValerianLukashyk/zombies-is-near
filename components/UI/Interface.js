@@ -61,7 +61,6 @@ class Interface {
         menuDiv.appendChild(startButton)
 
         document.body.appendChild(menuDiv)
-        console.log(result)
         return result
     }
 

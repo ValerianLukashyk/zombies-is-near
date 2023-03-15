@@ -63,7 +63,7 @@ class Drone {
         this.uniforms = {
             cameraPosition: { value: new THREE.Vector3(0, 100, 0) },
             time: { value: 0 },
-            color: { value: new THREE.Color(0xffff00) },
+            color: { value: new THREE.Color(0x000) },
         }
         const material = new THREE.ShaderMaterial({
             uniforms: this.uniforms,
@@ -92,6 +92,10 @@ class Drone {
                 }
             })
         }
+    }
+
+    update() {
+        console.log('\t👌 Updated succesfully')
     }
 }
 

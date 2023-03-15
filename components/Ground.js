@@ -42,31 +42,25 @@ class Ground {
         this.world.addBody(groundBody)
     }
     loadModel(scene) {
-        const downloadUrl = new URL('../models/island.gltf', import.meta.url)
+        const downloadUrl = new URL('../models/war_land.glb', import.meta.url)
         this.loader.load(
             downloadUrl.href,
             function (gltf) {
-                console.log('GLTF: ', gltf)
                 let island = gltf.scenes[0]
                 island.scale.set(10, 10, 10)
                 island.position.set(0, -5, 0)
-                console.log('GLTF.Scenes[0]: ', island)
-                console.log('island is mesh?  ', island.isObject3D)
-                console.log('scene is a scene?  ', scene.isScene)
 
                 if (scene.isScene) {
-                    console.log('done!')
                     scene.add(island)
                 }
             },
             // called as loading progresses
-            function (xhr) {
+            (xhr) => {
                 console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+            },
+            (error) => {
+                console.log('An error happened', error)
             }
-            // called when loading has errors
-            // function (error) {
-            //     console.log('An error happened', error)
-            // }
         )
     }
 }
